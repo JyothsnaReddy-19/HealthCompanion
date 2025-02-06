@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Companion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #F6F4F0;
+      color: #2E5077;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #2E5077;
+      padding: 0.5rem;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 300;
+    }
+
+    .menu-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .menu-icon div {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    /* Carousel styles */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;  /* Ensure full width */
+      height: 50vh; /* Use viewport height for responsiveness */
+      overflow: hidden;
+      margin-top: 20px; /* Add some margin above carousel */
+    }
+
+    .carousel {
+      display: flex;
+      transition: transform 0.5s ease;
+      height: 100%; /* Ensure the carousel takes full height */
+    }
+
+    .carousel-item {
+      flex: 0 0 100%; /* Ensure each item takes full width */
+      height: 100%;  /* Make each item fill the container height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Ensure the image doesn't overflow */
+    }
+
+    .carousel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures image covers entire container while maintaining aspect ratio */
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 10; /* Ensure buttons are above the images */
+    }
+
+    .carousel-btn.left {
+      left: 10px;
+    }
+
+    .carousel-btn.right {
+      right: 10px;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      position: fixed;
+      left: -200px;
+      top: 0;
+      width: 200px;
+      height: 100vh;
+      background-color: #2E5077;
+      color: white;
+      padding: 1rem;
+      transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .menu-item {
+      margin: 1.5rem 0;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .menu-item a {
+      text-decoration: none;
+      color: white;
+    }
+
+    .menu-item a:hover {
+      color: #F6F4F0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="menu-icon" onclick="toggleSidebar()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <h1>Health Companion</h1>
+  </header>
+
+  <!-- Carousel Section -->
+  <div class="carousel-container">
+    <div class="carousel">
+      <div class="carousel-item"><img src="https://via.placeholder.com/800x300?text=Slide+1" alt="Slide 1"></div>
+      <div class="carousel-item"><img src="https://via.placeholder.com/800x300?text=Slide+2" alt="Slide 2"></div>
+      <div class="carousel-item"><img src="https://images.pexels.com/photos/2821823/pexels-photo-2821823.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Slide 3"></div>
+      <div class="carousel-item"><img src="https://www.neptunehospital.com/img/new/contact3.jpg" alt="Slide 4"></div>
+      <div class="carousel-item"><img src="https://via.placeholder.com/800x300?text=Slide+5" alt="Slide 5"></div>
+      <div class="carousel-item"><img src="https://via.placeholder.com/800x300?text=Slide+6" alt="Slide 6"></div>
+      <div class="carousel-item"><img src="https://via.placeholder.com/800x300?text=Slide+7" alt="Slide 7"></div>
+      <div class="carousel-item"><img src="https://via.placeholder.com/800x300?text=Slide+8" alt="Slide 8"></div>
+    </div>
+    <button class="carousel-btn left" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="carousel-btn right" onclick="changeSlide(1)">&#10095;</button>
+  </div>
+
+  <div class="sidebar">
+    <div class="menu-item"><a href="prescription.html">Prescription</a></div>
+    <div class="menu-item"><a href="reminders.html">Reminders</a></div>
+    <div class="menu-item"><a href="emergency.html">Emergency Health Numbers</a></div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+
+    function changeSlide(direction) {
+      const carousel = document.querySelector('.carousel');
+      const slides = document.querySelectorAll('.carousel-item');
+      currentSlide += direction;
+
+      if (currentSlide < 0) {
+        currentSlide = slides.length - 1;  // Loop to last slide
+      } else if (currentSlide >= slides.length) {
+        currentSlide = 0;  // Loop to first slide
+      }
+
+      carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    // Toggle sidebar menu
+    function toggleSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
