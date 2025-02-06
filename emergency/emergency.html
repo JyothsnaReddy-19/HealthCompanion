@@ -5,24 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hospital Search in Hyderabad</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #4DA1A9;
+      padding: 10px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav ul li {
+      display: inline;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+
+    nav ul {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-center {
+      margin: 0 auto;
+    }
+
     #map {
       height: 500px;
       width: 100%;
     }
 
-    
+    #controls {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
     #search {
-      margin-bottom: 20px;
       padding: 10px;
       width: 300px;
     }
 
-   
-    .hospital-details {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      background-color: #f9f9f9;
+    #clear {
+      padding: 10px 15px;
+      background-color: #2E5077;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #clear:hover {
+      background-color: #2E5077;
     }
 
     .hospital-list {
@@ -38,8 +91,17 @@
   </style>
 </head>
 <body>
-  <h1>Hospital Search in Hyderabad</h1>
-  <input type="text" id="search" placeholder="Search for a hospital..." />
+  <nav>
+    <ul>
+      <li class="nav-center"><a href="#">Hospital Search</a></li>
+      <li><a href="#">Home</a></li>
+    </ul>
+  </nav>
+
+  <div id="controls">
+    <input type="text" id="search" placeholder="Search for a hospital...">
+    <button id="clear">Clear</button>
+  </div>
   <div id="map"></div>
   <div id="hospital-list" class="hospital-list"></div>
 
@@ -48,7 +110,6 @@
     let map; 
     let markers = []; 
 
-    
     async function fetchHospitals() {
       const overpassUrl = "https://overpass-api.de/api/interpreter";
       const query = `
@@ -80,7 +141,6 @@
       }
     }
 
-  
     function initializeMap() {
       map = L.map("map").setView([17.3850, 78.4867], 12); 
 
@@ -104,7 +164,6 @@
       }
     }
 
-  
     function showHospitalsOnMap(hospitals) {
       markers.forEach((marker) => marker.remove());
       markers = [];
@@ -129,7 +188,6 @@
       }
     }
 
-    
     function formatPhoneNumber(phone) {
       if (!phone) return "Phone number not available";
       if (/^\d{8}$/.test(phone)) return `${phone} (Add 040)`;
@@ -165,14 +223,13 @@
       });
     }
 
-    
     function trackUserLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           const userLat = position.coords.latitude;
           const userLon = position.coords.longitude;
           map.setView([userLat, userLon], 14); 
-          
+
           L.marker([userLat, userLon]).addTo(map)
             .bindPopup("You are here")
             .openPopup();
@@ -184,16 +241,19 @@
       }
     }
 
-    
     document.addEventListener("DOMContentLoaded", () => {
       initializeMap();
       fetchHospitals();
       document.getElementById("search").addEventListener("input", handleSearch);
+      document.getElementById("clear").addEventListener("click", () => {
+        document.getElementById("search").value = "";
+        showHospitalsOnMap(hospitalsData);
+        showHospitalList(hospitalsData);
+      });
       trackUserLocation();  
     });
   </script>
 
-  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
