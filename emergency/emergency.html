@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hospital Search in Hyderabad</title>
   <style>
-    /* Styling for the map container */
     #map {
       height: 500px;
       width: 100%;
     }
 
-    /* Styling for search input */
+    
     #search {
       margin-bottom: 20px;
       padding: 10px;
       width: 300px;
     }
 
-    /* Styling hospital list container */
+   
     .hospital-details {
       margin-top: 20px;
       padding: 10px;
@@ -45,11 +44,11 @@
   <div id="hospital-list" class="hospital-list"></div>
 
   <script>
-    let hospitalsData = []; // To store hospital data fetched from the Overpass API
-    let map; // Reference to the Leaflet map
-    let markers = []; // To store map markers
+    let hospitalsData = []; 
+    let map; 
+    let markers = []; 
 
-    // Fetch hospital data using the Overpass API
+    
     async function fetchHospitals() {
       const overpassUrl = "https://overpass-api.de/api/interpreter";
       const query = `
@@ -75,22 +74,21 @@
         });
 
         const data = await response.json();
-        hospitalsData = data.elements; // Store fetched hospital data
+        hospitalsData = data.elements;
       } catch (error) {
         console.error("Error fetching data from Overpass API:", error);
       }
     }
 
-    // Initialize the Leaflet map
+  
     function initializeMap() {
-      map = L.map("map").setView([17.3850, 78.4867], 12); // Center map on Hyderabad
-      
+      map = L.map("map").setView([17.3850, 78.4867], 12); 
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
       }).addTo(map);
     }
 
-    // Handle hospital search based on input
     function handleSearch() {
       const searchTerm = document.getElementById("search").value.toLowerCase();
       const matchingHospitals = hospitalsData.filter((hospital) => {
@@ -106,9 +104,8 @@
       }
     }
 
-    // Display hospitals on the map
+  
     function showHospitalsOnMap(hospitals) {
-      // Remove previous markers
       markers.forEach((marker) => marker.remove());
       markers = [];
 
@@ -126,21 +123,19 @@
         }
       });
 
-      // Adjust the map view to fit all markers
       if (markers.length > 0) {
         const group = new L.featureGroup(markers);
         map.fitBounds(group.getBounds());
       }
     }
 
-    // Format phone numbers and handle 8-digit numbers
+    
     function formatPhoneNumber(phone) {
       if (!phone) return "Phone number not available";
       if (/^\d{8}$/.test(phone)) return `${phone} (Add 040)`;
       return phone;
     }
 
-    // Display hospital details in a list
     function showHospitalList(hospitals) {
       const hospitalListDiv = document.getElementById("hospital-list");
       hospitalListDiv.innerHTML = "<h2>Matching Hospitals</h2>";
@@ -152,7 +147,6 @@
         const postcode = hospital.tags?.["addr:postcode"] || "";
         const phone = hospital.tags?.["contact:phone"] || hospital.tags?.["phone"] || hospital.tags?.["contact:mobile"];
 
-        // Skip hospitals with no address at all
         if (!address && !city && !postcode) {
           return;
         }
@@ -171,15 +165,35 @@
       });
     }
 
-    // Initialize the map and fetch hospitals when the page loads
+    
+    function trackUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const userLat = position.coords.latitude;
+          const userLon = position.coords.longitude;
+          map.setView([userLat, userLon], 14); 
+          
+          L.marker([userLat, userLon]).addTo(map)
+            .bindPopup("You are here")
+            .openPopup();
+        }, function(error) {
+          alert("Error retrieving your location: " + error.message);
+        });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
+
+    
     document.addEventListener("DOMContentLoaded", () => {
       initializeMap();
       fetchHospitals();
       document.getElementById("search").addEventListener("input", handleSearch);
+      trackUserLocation();  
     });
   </script>
 
-  <!-- Include Leaflet CSS and JS -->
+  
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
